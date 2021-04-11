@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Eight — Keep Talking and Nobody Explodes Module</title>
+    <link rel="stylesheet" type="text/css" href="css/font.css" />
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <script src="js/ktane-utils.js"></script>
+    <script>
+        const data = [
+            "4280752097",
+            "8126837692",
+            "5317800685",
+            "9852322448",
+            "3710561298",
+            "6154187606",
+            "8863108821",
+            "4628679367",
+        ];
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("123");
+            const table = document.getElementById("data-table");
+            for (let y = 0; y < data.length; y++) {
+                for (let x = 0; x < data[y].length; x++) {
+                    const node = document.createElement("td");
+                    node.innerText = data[y][x];
+                    table.children[y + 2].appendChild(node);
+                }
+            }
+        });
+    </script>
+    <style>
+        table {
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section">
+        <div class="page page-bg-02">
+            <div class="page-header">
+                <span class="page-header-doc-title">
+                    Keep Talking and Nobody Explodes Mod
+                </span>
+                <span class="page-header-section-title">Eight</span>
+            </div>
+            <div class="page-content">
+                <img src="img/Component/Module Name.svg" class="diagram" />
+                <h2>On the Subject of Eight</h2>
+                <p class="flavour-text">Now we will check if you can quickly divide numbers by 8.</p>
+                <p>The module consists of a small one-digit display, an 8-digits display and a button labeled "SKIP".</p>
+                <p>The module consists of a small one-digit display, an 8-digits display and a button labeled "SKIP".</p>
+                <p>The module consists of a small one-digit display, an 8-digits display and a button labeled "SKIP".</p>
+                <p>The module consists of a small one-digit display, an 8-digits display and a button labeled "SKIP".</p>
+                <p>The module consists of a small one-digit display, an 8-digits display and a button labeled "SKIP".</p>
+                <table>
+                    <tbody id="data-table">
+                        <tr>
+                            <td rowspan="2">Digit position</td>
+                            <td rowspan="2">Value</td>
+                            <td colspan="10">Digit on small display</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Indicators count</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Modules count</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Solved modules count</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Batteries count</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Sum of serial number digits</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Remaining minutes count</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Ports count</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="page-footer relative-footer">Page 1 of 2</div>
+        </div>
+    </div>
+</body>
+
+</html>
