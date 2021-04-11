@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 114753501171084414}
   - component: {fileID: 114210030695818394}
   m_Layer: 0
-  m_Name: AlfaBravoModule
+  m_Name: EightModule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -786,17 +786,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2440939a73e51f4f9641baabc398e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  display: {fileID: 1604619651771446}
-  kMAudio: {fileID: 114519548905714800}
-  bombInfo: {fileID: 114753501171084414}
-  skipButton: {fileID: 114751784090902694}
-  stage: {fileID: 114534642215331620}
-  letterPrefab: {fileID: 114443710187802256, guid: 20e8c14d59791b445ba0239ba28f4cf5,
+  Display: {fileID: 1604619651771446}
+  Audio: {fileID: 114519548905714800}
+  BombInfo: {fileID: 114753501171084414}
+  BombModule: {fileID: 114598102084040194}
+  SkipButton: {fileID: 114751784090902694}
+  Stage: {fileID: 114534642215331620}
+  SelectableDigitPrefab: {fileID: 114570645232544136, guid: 20e8c14d59791b445ba0239ba28f4cf5,
     type: 2}
-  shouldPassOnActivation: 0
-  skipsToAnswer: 0
-  startingTime: 0
-  nextExpectedAnswers: 
 --- !u!114 &114230481166392220
 MonoBehaviour:
   m_ObjectHideFlags: 1

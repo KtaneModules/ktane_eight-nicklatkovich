@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour {
-	public const char NOT_A_CHARACTER = '\0';
-
 	public delegate void OnActualizedHandler();
 	public event OnActualizedHandler Actualized;
 
@@ -29,8 +27,8 @@ public class Character : MonoBehaviour {
 		}
 	}
 
-	private char _character;
-	public char character {
+	private char? _character;
+	public char? character {
 		get { return _character; }
 		set {
 			if (_character == value) return;
@@ -54,7 +52,7 @@ public class Character : MonoBehaviour {
 	protected virtual void Start() {
 		activeCharacter = GetRandomCharacter();
 		_character = minCharacter;
-		character = NOT_A_CHARACTER;
+		character = null;
 	}
 
 	private IEnumerator<object> UpdateCharacter() {

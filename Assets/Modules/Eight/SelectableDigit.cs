@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Letter : Character {
+public class SelectableDigit : Character {
+	public int value;
+
 	private bool _highlighted = false;
 	public bool highlighted {
 		get { return _highlighted; }
@@ -23,8 +25,30 @@ public class Letter : Character {
 		}
 	}
 
+	private bool _removed = false;
+	public bool removed {
+		get { return _removed; }
+		set {
+			if (_removed == value) return;
+			_removed = value;
+			UpdateMeshColor();
+		}
+	}
+
+	private bool _disabled = false;
+	public bool disabled {
+		get { return _disabled; }
+		set {
+			_disabled = value;
+			if (value) character = null;
+		}
+	}
+
 	public override Color GetMeshColor() {
-		return activeCharacter != character ? Color.blue : (highlighted && active ? Color.red : Color.white);
+		if (disabled) return Color.gray;
+		if (removed) return Color.black;
+		if (activeCharacter != character) return Color.blue;
+		return highlighted && active ? Color.red : Color.white;
 	}
 
 	protected override void Start() {

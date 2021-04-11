@@ -57,8 +57,9 @@ GameObject:
   - component: {fileID: 114443710187802256}
   - component: {fileID: 114064761050226142}
   - component: {fileID: 65067840474992764}
+  - component: {fileID: 114570645232544136}
   m_Layer: 0
-  m_Name: Letter
+  m_Name: SelectableDigit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,6 +217,20 @@ MonoBehaviour:
   textMesh: {fileID: 102162716731716078}
   minCharacter: 65
   maxCharacter: 90
+--- !u!114 &114570645232544136
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1998904407313684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f6ed71169a9c3247a27f1a09f967d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMesh: {fileID: 102162716731716078}
+  minCharacter: 48
+  maxCharacter: 57
 --- !u!114 &114690428611273378
 MonoBehaviour:
   m_ObjectHideFlags: 1
