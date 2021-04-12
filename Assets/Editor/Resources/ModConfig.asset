@@ -14,7 +14,8 @@ MonoBehaviour:
   id: eight
   title: Eight
   author: NickLatkovich
-  description: 
+  description: The module in which you need to remove digits from a decrypted number
+    to get a new number that is divisible by eight.
   version: 0.1.0
   outputFolder: build
-  previewImage: 
+  previewImage: {fileID: 2800000, guid: d9becb43ba70ebc4da7daa31a2ebf226, type: 3}

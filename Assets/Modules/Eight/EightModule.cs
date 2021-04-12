@@ -23,9 +23,8 @@ public class EightModule : MonoBehaviour {
 	};
 
 	public readonly string TwitchHelpMessage = new string[] {
-		"`!{0} submit 123` - submit digits by its indices",
-		"`!{0} remove 123` - remove digits",
-		"`!{0} skip` `!{0} submit` - press button with label \"SKIP\"",
+		"\"!{0} submit 123\" or \"!{0} remove 123\" to submit/remove digits by its indices",
+		"\"!{0} skip\" or \"!{0} submit\" to press button with label SKIP",
 	}.Join(" | ");
 
 	public GameObject Display;
@@ -35,6 +34,9 @@ public class EightModule : MonoBehaviour {
 	public KMSelectable SkipButton;
 	public Character Stage;
 	public SelectableDigit SelectableDigitPrefab;
+
+	private bool _forceSolved = false;
+	public bool forceSolved { get { return _forceSolved; } }
 
 	private bool solved = false;
 	private int solvesCount;
@@ -54,6 +56,7 @@ public class EightModule : MonoBehaviour {
 			float x = DIGITS_INTERVAL * (i - (DIGITS_COUNT - 1) / 2f);
 			digit.transform.localPosition = new Vector3(x, DIGITS_HEIGHT, 0f);
 			digit.transform.localRotation = new Quaternion();
+			digit.transform.localScale = Vector3.one;
 			digit.Actualized += () => OnDigitActualized();
 			KMSelectable digitSelectable = digit.GetComponent<KMSelectable>();
 			digitSelectable.Parent = selfSelectable;
@@ -120,7 +123,16 @@ public class EightModule : MonoBehaviour {
 		return null;
 	}
 
+	public void TwitchHandleForcedSolve() {
+		Debug.LogFormat("[Eight #{0}] Force-solved", moduleId);
+		_forceSolved = true;
+		Solve();
+	}
+
 	private void OnDigitActualized() {
+		if (!solved) return;
+		if (digits.Any((d) => !d.actual)) return;
+		BombModule.HandlePass();
 	}
 
 	private bool OnDigitPressed(int index) {
@@ -189,19 +201,20 @@ public class EightModule : MonoBehaviour {
 		return null;
 	}
 
-	private bool OnCorrectAnswer() {
-		if (notDisabledDigits.Count == 2) {
-			solved = true;
-			BombModule.HandlePass();
-			foreach (var digit in digits) {
-				digit.disabled = false;
-				digit.removed = false;
-				digit.character = '8';
-				digit.active = false;
-			}
-			Stage.character = '8';
-			return true;
+	private bool Solve() {
+		solved = true;
+		foreach (var digit in digits) {
+			digit.disabled = false;
+			digit.removed = false;
+			digit.character = '8';
+			digit.active = false;
 		}
+		Stage.character = '8';
+		return true;
+	}
+
+	private bool OnCorrectAnswer() {
+		if (notDisabledDigits.Count == 2) return Solve();
 		int digitToDisable = notDisabledDigits.PickRandom();
 		Debug.LogFormat("[Eight #{0}] Digit #{1} disabled", moduleId, digitToDisable + 1);
 		notDisabledDigits.Remove(digitToDisable);

@@ -916,7 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMesh: {fileID: 102944231684166934}
-  minCharacter: 49
+  minCharacter: 48
   maxCharacter: 57
 --- !u!114 &114598102084040194
 MonoBehaviour:
