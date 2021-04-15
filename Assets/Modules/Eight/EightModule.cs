@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -97,30 +98,38 @@ public class EightModule : MonoBehaviour {
 		}
 	}
 
-	public KMSelectable[] ProcessTwitchCommand(string command) {
+	public IEnumerator ProcessTwitchCommand(string command) {
 		command = command.Trim().ToLower();
-		if (command == "skip" || command == "submit") return new KMSelectable[] { SkipButton };
+		if (command == "skip" || command == "submit") {
+			yield return null;
+			yield return new KMSelectable[] { SkipButton };
+			yield break;
+		}
 		if (Regex.IsMatch(command, @"submit +[1-8]+")) {
 			string[] split = command.Split(' ');
 			HashSet<int> indices = split.Length == 1 ? new HashSet<int>() : new HashSet<int>(
 				split.Last().ToCharArray().Select((c) => c - '0' - 1)
 			);
 			Debug.Log(indices.Join(","));
-			if (indices.Any((i) => digits[i].disabled || digits[i].removed)) return null;
+			if (indices.Any((i) => digits[i].disabled || digits[i].removed)) yield break;
 			int[] indicesToRemove = Enumerable.Range(0, DIGITS_COUNT).Where((i) => (
 				!indices.Contains(i)
 			)).ToArray();
-			return indicesToRemove.Select((i) => digits[i].GetComponent<KMSelectable>()).ToList().Concat(
+			yield return null;
+			yield return indicesToRemove.Select((i) => digits[i].GetComponent<KMSelectable>()).ToList().Concat(
 				new KMSelectable[] { SkipButton }
 			).ToArray();
+			if (solved) yield return "solve";
+			yield break;
 		}
 		if (Regex.IsMatch(command, @"remove +[1-8]+")) {
 			int[] indices = command.Split(' ').Last().ToCharArray().Select((c) => c - '0' - 1).ToArray();
-			return indices.Where((i) => (
+			yield return null;
+			yield return indices.Where((i) => (
 				!digits[i].disabled && !digits[i].removed
 			)).Select((i) => digits[i].GetComponent<KMSelectable>()).Cast<KMSelectable>().ToArray();
+			yield break;
 		}
-		return null;
 	}
 
 	public void TwitchHandleForcedSolve() {
