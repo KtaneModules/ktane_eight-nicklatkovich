@@ -39,6 +39,42 @@ public class EightModule : MonoBehaviour {
 	private bool _forceSolved = false;
 	public bool forceSolved { get { return _forceSolved; } }
 
+	private int _souvenirLastStageDigit;
+	public int souvenirLastStageDigit { get { return _souvenirLastStageDigit; } }
+
+	private int _souvenirLastBrokenDigitPosition;
+	public int souvenirLastBrokenDigitPosition { get { return _souvenirLastBrokenDigitPosition; } }
+
+	private int _souvenirLastResultingDigits;
+	public int souvenirLastResultingDigits { get { return _souvenirLastResultingDigits; } }
+
+	private int _souvenirLastDisplayedNumber = -1;
+	public int souvenirLastDisplayedNumber { get { return _souvenirLastDisplayedNumber; } }
+
+	public HashSet<int> souvenirPossibleLastResultingDigits {
+		get {
+			int limit = 20;
+			HashSet<int> result = new HashSet<int>();
+			while (limit-- > 0) {
+				if (result.Count > 5) return result;
+				result.Add(GenerateLastStageNumber());
+			}
+			return result;
+		}
+	}
+
+	public HashSet<int> souvenirPossibleLastNumbers {
+		get {
+			int limit = 20;
+			HashSet<int> result = new HashSet<int>();
+			while (limit-- > 0) {
+				if (result.Count > 5) return result;
+				result.Add(GenerateLastStageNumber());
+			}
+			return result;
+		}
+	}
+
 	private bool solved = false;
 	private int solvesCount;
 	private int remainingMinutes;
@@ -85,14 +121,12 @@ public class EightModule : MonoBehaviour {
 			int newRemainingMinutes = GetRemainingMinutes();
 			if (newRemainingMinutes != remainingMinutes) {
 				remainingMinutes = newRemainingMinutes;
-				Debug.LogFormat("[Eight #{0}] Remaining minutes changed to {1}", moduleId, remainingMinutes);
-				UpdateDigit(6, true);
+				UpdateDigit(6);
 			}
 			int newSolvesCount = GetSolvesCount();
 			if (newSolvesCount != solvesCount) {
 				solvesCount = newSolvesCount;
-				Debug.LogFormat("[Eight #{0}] Solved modules count changed to {1}", moduleId, solvesCount);
-				UpdateDigit(3, true);
+				UpdateDigit(3);
 			}
 			yield return new WaitForSeconds(.1f);
 		}
@@ -189,6 +223,7 @@ public class EightModule : MonoBehaviour {
 
 	private void Strike() {
 		BombModule.HandleStrike();
+		_souvenirLastDisplayedNumber = -1;
 		foreach (SelectableDigit digit in digits) digit.disabled = false;
 		notDisabledDigits = new HashSet<int>(Enumerable.Range(0, DIGITS_COUNT));
 	}
@@ -225,6 +260,7 @@ public class EightModule : MonoBehaviour {
 	private bool OnCorrectAnswer() {
 		if (notDisabledDigits.Count == 2) return Solve();
 		int digitToDisable = notDisabledDigits.PickRandom();
+		_souvenirLastBrokenDigitPosition = digitToDisable;
 		Debug.LogFormat("[Eight #{0}] Digit #{1} disabled", moduleId, digitToDisable + 1);
 		notDisabledDigits.Remove(digitToDisable);
 		digits[digitToDisable].disabled = true;
@@ -232,7 +268,9 @@ public class EightModule : MonoBehaviour {
 	}
 
 	private void GenerateDigits() {
-		Stage.character = (char)Random.Range('0', '9' + 1);
+		int stage = Random.Range(0, 10);
+		Stage.character = (char)('0' + stage);
+		_souvenirLastStageDigit = stage;
 		Debug.LogFormat("[Eight #{0}] New digit on small display: {1}", moduleId, Stage.character);
 		if (notDisabledDigits.Count == 2) {
 			GenerateTwoDigits();
@@ -279,18 +317,29 @@ public class EightModule : MonoBehaviour {
 		UpdateDigits();
 	}
 
-	private void GenerateTwoDigits() {
-		var v = 0;
+	private int GenerateLastStageNumber() {
 		switch (Random.Range(0, 3)) {
-			case 0: v = Random.Range(0, 2) == 0 ? Random.Range(2, 13) * 8 : Random.Range(0, 100); break;
-			case 1: v = 80 + Random.Range(0, 5) * 2; break;
-			case 2: v = Random.Range(0, 10) * 10 + 8; break;
+			case 0: return Random.Range(0, 2) == 0 ? Random.Range(2, 13) * 8 : Random.Range(0, 100);
+			case 1: return 80 + Random.Range(0, 5) * 2;
+			default: return Random.Range(0, 10) * 10 + 8;
 		}
-		for (var i = 0; i < DIGITS_COUNT; i++) {
+	}
+
+	private void GenerateTwoDigits() {
+		int v = GenerateLastStageNumber();
+		_souvenirLastResultingDigits = v;
+		bool remainingDigitsIsStatic = true;
+		int firstNotDisabledDigitIndex = -1;
+		int secondNotDisabledDigitIndex = -1;
+		for (var i = DIGITS_COUNT - 1; i >= 0; i--) {
 			if (digits[i].disabled) continue;
 			values[i] = v % 10;
 			v /= 10;
+			if (!IsDigitStatic(i)) remainingDigitsIsStatic = false;
+			if (secondNotDisabledDigitIndex == -1) secondNotDisabledDigitIndex = i;
+			else firstNotDisabledDigitIndex = i;
 		}
+		if (remainingDigitsIsStatic) _souvenirLastDisplayedNumber = GetDigitAt(firstNotDisabledDigitIndex) * 10 + GetDigitAt(secondNotDisabledDigitIndex);
 		UpdateDigits();
 	}
 
@@ -311,10 +360,15 @@ public class EightModule : MonoBehaviour {
 		SelectableDigit digit = digits[digitIndex];
 		if (digit.disabled) return;
 		digit.value = values[digitIndex];
-		int value = (values[digitIndex] - GetAddendum(digitIndex)) % 10;
-		if (value < 0) value = 10 + value;
+		int value = GetDigitAt(digitIndex);
 		digit.character = (char)(value + '0');
 		if (log) Debug.LogFormat("[Eight #{0}] Digit #{1} new rendered value: {2}", moduleId, digitIndex + 1, value);
+	}
+
+	private int GetDigitAt(int digitIndex) {
+		int value = (values[digitIndex] - GetAddendum(digitIndex)) % 10;
+		if (value < 0) value = 10 + value;
+		return value;
 	}
 
 	private int GetAddendum(int digitIndex) {
@@ -333,6 +387,10 @@ public class EightModule : MonoBehaviour {
 			case 7: return BombInfo.GetPortCount();
 			default: throw new UnityException("Invalid digit index");
 		}
+	}
+
+	private bool IsDigitStatic(int digitIndex) {
+		return digitIndex != 3 && digitIndex != 6;
 	}
 
 	private int GetRemainingMinutes() {
