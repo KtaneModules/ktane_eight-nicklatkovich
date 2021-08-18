@@ -139,12 +139,9 @@ public class EightModule : MonoBehaviour {
 			yield return new KMSelectable[] { SkipButton };
 			yield break;
 		}
-		if (Regex.IsMatch(command, @"submit +[1-8]+")) {
+		if (Regex.IsMatch(command, @"^submit +([1-8] ?)+$")) {
 			string[] split = command.Split(' ');
-			HashSet<int> indices = split.Length == 1 ? new HashSet<int>() : new HashSet<int>(
-				split.Last().ToCharArray().Select((c) => c - '0' - 1)
-			);
-			Debug.Log(indices.Join(","));
+			HashSet<int> indices = new HashSet<int>(command.Split(' ').Skip(1).Where(s => s.Length > 0).Join("").ToCharArray().Select((c) => c - '0' - 1));
 			if (indices.Any((i) => digits[i].disabled || digits[i].removed)) yield break;
 			int[] indicesToRemove = Enumerable.Range(0, DIGITS_COUNT).Where((i) => (
 				!indices.Contains(i)
@@ -156,8 +153,8 @@ public class EightModule : MonoBehaviour {
 			if (solved) yield return "solve";
 			yield break;
 		}
-		if (Regex.IsMatch(command, @"remove +[1-8]+")) {
-			int[] indices = command.Split(' ').Last().ToCharArray().Select((c) => c - '0' - 1).ToArray();
+		if (Regex.IsMatch(command, @"^remove +([1-8] ?)+$")) {
+			int[] indices = command.Split(' ').Skip(1).Where(s => s.Length > 0).Join("").ToCharArray().Select((c) => c - '0' - 1).ToArray();
 			yield return null;
 			yield return indices.Where((i) => (
 				!digits[i].disabled && !digits[i].removed
