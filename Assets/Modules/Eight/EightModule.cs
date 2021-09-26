@@ -24,8 +24,10 @@ public class EightModule : MonoBehaviour {
 	};
 
 	public readonly string TwitchHelpMessage = new string[] {
-		"\"!{0} submit 123\" or \"!{0} remove 123\" to submit/remove digits by its indices",
-		"\"!{0} skip\" or \"!{0} submit\" to press button with label SKIP",
+		"\"!{0} remove 456\" - remove digits by its indices",
+		"\"!{0} skip\" or \"!{0} submit\" - press button with label SKIP",
+		"\"!{0} submit 123\" - leave only digits with provided indices and press button SKIP",
+		"Indexes are numbered from left to right from 1 to 8",
 	}.Join(" | ");
 
 	public GameObject Display;
